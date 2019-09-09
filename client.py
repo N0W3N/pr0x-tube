@@ -39,8 +39,8 @@ def content():
                     spamwriter.writerow(([links.strip()]))
                     print(links)
 
-                for content in soup1.find_all('div', class_ = 'entry-content post_content'):
-                    content1 = content.text
+                for description in soup1.find_all('div', class_ = 'entry-content post_content'):
+                    content1 = description.text
                     spamwriter.writerow([content1.strip()])
                     print(content)
 
