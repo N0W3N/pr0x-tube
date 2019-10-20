@@ -1,41 +1,52 @@
-import requests
-from bs4 import BeautifulSoup as bs
 import csv
 import re
 
-def init():
+import requests
+from bs4 import BeautifulSoup as bs
 
-    r = requests.get('localhost/post-sitemap34.xml')
+
+# initialize parser and soup
+
+
+def init():
+    r = requests.get('localhost/post-sitemap34.xml')  # replace the url with another one
     soup = bs(r.text, 'html.parser')
 
     return soup
 
 
+# scrape all existing of the sitemap and save them in an excel file
+
+
 def links(soup):
-    with open('eggs.csv', 'a+', newline = '') as csvfile:
+    with open('urls.csv', 'a+', newline='') as csvfile:
         for link in soup.find_all('loc'):
-            spamwriter = csv.writer(csvfile, delimiter=' ')
+            urlwriter = csv.writer(csvfile, delimiter=' ')
             link1 = link.text.strip('|')
-            spamwriter.writerow([link1])
+            urlwriter.writerow([link1])
             print(link1)
     csvfile.close()
+
+
+# open all links in urls.csv, scrape them for all needed informations and save them in a new excel file.
+# also iterate the filename of the excel file starting with each new url
+
 
 def content():
 
     i = 0
-
-    with open('eggs.csv', 'r') as file:
-        spamreader = csv.reader(file)
-        for row in spamreader:
+    with open('urls.csv', 'r') as file:
+        urlreader = csv.reader(file)
+        for row in urlreader:
             link1 = ''.join(row)
             i += 1
 
             a = requests.get(link1)
             soup1 = bs(a.text, 'html.parser')
 
-            with open('test%s.csv' % i, 'w+', newline = '') as con:
+            with open('test%s.csv' % i, 'w+', newline='') as con:
                 spamwriter = csv.writer(con, delimiter=' ')
-                for links in soup1.find('h1', class_ = 'entry-title'):
+                for links in soup1.find('h1', class_='entry-title'):
                     spamwriter.writerow(([links.strip()]))
                     print(links)
 
