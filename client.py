@@ -1,24 +1,27 @@
 import csv
 import re
-
 import requests
 from bs4 import BeautifulSoup as bs
-
-
-# initialize parser and soup
+#import sys
+#from parser import
 
 
 def init():
-    r = requests.get('localhost/post-sitemap34.xml')  # replace the url with another one
-    soup = bs(r.text, 'html.parser')
 
+    """ initialization of the main scraper
+    to collect information, create and return the soup.
+     """
+
+    r = requests.get('http://www.localhost.com/post-sitemap41.xml')
+    soup = bs(r.text, 'html.parser')
     return soup
 
 
-# scrape all existing of the sitemap and save them in an excel file
-
-
 def links(soup):
+
+    """parsing function to collect all existing links of the sitemap url.
+    These links will be saved in one single csv file for further actions."""
+
     with open('urls.csv', 'a+', newline='') as csvfile:
         for link in soup.find_all('loc'):
             urlwriter = csv.writer(csvfile, delimiter=' ')
@@ -28,11 +31,12 @@ def links(soup):
     csvfile.close()
 
 
-# open all links in urls.csv, scrape them for all needed informations and save them in a new excel file.
-# also iterate the filename of the excel file starting with each new url
-
-
 def content():
+
+    """Main function to scrape and collect all required information of all posts on the site.
+     It reads the urls-file, loads each of the posts one by one, scrapes them for title, content, categories, thumbnail
+     and video link - if available.
+     The function creates for each loaded link a new csv file and writes those information down."""
 
     i = 0
     with open('urls.csv', 'r') as file:
@@ -63,6 +67,16 @@ def content():
                     string2 = re.sub('Bookmark the permalink', '', string1)
                     print(string2[:-4])
                     spamwriter.writerow([string2[:-4].strip()])
+
+                for image_link in soup1.select('.aligncenter'):
+                    url = image_link['src']
+                    print(url)
+                    spamwriter.writerow([url])
+
+                for stream_link in soup1.find_all('iframe'):
+                    frame = stream_link['src']
+                    print(stream_link)
+                    spamwriter.writerow([frame])
 
 
 def main():
