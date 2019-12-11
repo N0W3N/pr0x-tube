@@ -2,9 +2,7 @@ import csv
 import re
 import requests
 from bs4 import BeautifulSoup as bs
-
-
-# import sys
+import sys
 # from parser import
 
 
@@ -13,9 +11,19 @@ def init():
     to collect information, create and return the soup.
      """
 
-    r = requests.get('http://www.localhost.com/post-sitemap41.xml')
-    mainSoup = bs(r.text, 'html.parser')
-    return mainSoup
+    try:
+        r = requests.get('http://www.localhost.com/post-sitemap41.xml')
+    except requests.ConnectionError as ConnectionError:
+        print("A connection error has occurred.")
+        print(ConnectionError)
+        sys.exit()
+    except requests.Timeout as TimeoutError:
+        print("Site isn't responding yet. Either it's down for maintenance or Cloudflare is up.")
+        print(TimeoutError)
+        sys.exit()
+    else:
+        mainSoup = bs(r.text, 'html.parser')
+        return mainSoup
 
 
 def links(soup):
@@ -44,8 +52,18 @@ def content():
             post_link = ''.join(url_row)
             file_number += 1
 
-            link_row = requests.get(post_link)
-            url_soup = bs(link_row.text, 'html.parser')
+            try:
+                link_row = requests.get(post_link)
+            except requests.ConnectionError as ConnectionError:
+                print("A connection error has occurred.")
+                print(ConnectionError)
+                sys.exit()
+            except requests.Timeout as TimeoutError:
+                print("Site isn't responding yet. Either it's down for maintenance or Cloudflare is up.")
+                print(TimeoutError)
+                sys.exit()
+            else:
+                url_soup = bs(link_row.text, 'html.parser')
 
             with open('test%s.csv' % file_number, 'w+', newline='') as info_writer:
                 info_writer = csv.writer(info_writer, delimiter=' ')
