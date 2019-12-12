@@ -14,7 +14,7 @@ def init():
     try:
         r = requests.get('http://www.localhost.com/post-sitemap41.xml')
     except requests.ConnectionError as ConnectionError:
-        print("A connection error has occurred.")
+        print("Failed to establish a new connection")
         print(ConnectionError)
         sys.exit()
     except requests.Timeout as TimeoutError:
@@ -26,12 +26,12 @@ def init():
         return mainSoup
 
 
-def links(soup):
+def links(mainSoup):
     """parsing function to collect all existing links of the sitemap url.
     These links will be saved in one single csv file for further actions."""
 
-    with open('urls.csv', 'a+', newline='') as csvfile:
-        for url in soup.find_all('loc'):
+    with open('/Users/test/pr0x-tube/urls/urls.csv', 'a+', newline='') as csvfile:
+        for url in mainSoup.find_all('loc'):
             url_writer = csv.writer(csvfile, delimiter=' ')
             url_list = url.text.strip('|')
             url_writer.writerow([url_list])
@@ -46,7 +46,7 @@ def content():
      The function creates for each loaded link a new csv file and writes those information down."""
 
     file_number = 0
-    with open('urls.csv', 'r') as file:
+    with open('/Users/test/pr0x-tube/urls/urls.csv', 'r') as file:
         url_reader = csv.reader(file)
         for url_row in url_reader:
             post_link = ''.join(url_row)
@@ -55,7 +55,7 @@ def content():
             try:
                 link_row = requests.get(post_link)
             except requests.ConnectionError as ConnectionError:
-                print("A connection error has occurred.")
+                print("Failed to establish a new connection.")
                 print(ConnectionError)
                 sys.exit()
             except requests.Timeout as TimeoutError:
@@ -98,7 +98,7 @@ def content():
 
 def main():
     init()
-    links(soup=init())
+    links(mainSoup=init())
     content()
 
 
