@@ -74,7 +74,7 @@ def content():
                 for description in url_soup.find_all('div', class_='entry-content post_content'):
                     content1 = description.text
                     info_writer.writerow([content1.strip()])
-                    print(content)
+                    print(content1)
 
                 for category in url_soup.find_all('footer', {"class": "entry-meta"}):
                     cat = category.text
