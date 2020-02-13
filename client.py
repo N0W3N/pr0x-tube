@@ -12,7 +12,7 @@ def init():
      """
 
     try:
-        r = requests.get('http://www.localhost.com/post-sitemap41.xml')
+        r = requests.get('http://localhost/post-sitemap44.xml')
     except requests.ConnectionError as ConnectionError:
         print("Failed to establish a new connection")
         print(ConnectionError)
@@ -28,15 +28,17 @@ def init():
 
 def links(mainSoup):
     """parsing function to collect all existing links of the sitemap url.
-    These links will be saved in one single csv file for further actions."""
-
-    with open('/Users/test/pr0x-tube/urls/urls.csv', 'a+', newline='') as csvfile:
-        for url in mainSoup.find_all('loc'):
-            url_writer = csv.writer(csvfile, delimiter=' ')
-            url_list = url.text.strip('|')
-            url_writer.writerow([url_list])
-            print(url_list)
-    csvfile.close()
+    These links will be saved into one single csv file for further actions."""
+    try:
+        with open('/Users/test/pr0x-tube/urls/urls.csv', 'a+', newline='') as csvfile:
+            for url in mainSoup.find_all('loc'):
+                url_writer = csv.writer(csvfile, delimiter=' ')
+                url_list = url.text.strip('|')
+                url_writer.writerow([url_list])
+                print(url_list)
+    except IOError:
+        print('URLs are not available. The script needs to be executed again or the current file can not be accessed.')
+        sys.exit()
 
 
 def content():
@@ -52,16 +54,17 @@ def content():
             post_link = ''.join(url_row)
             file_number += 1
 
+            """ As we create a new requests for each link, we also have to check, if the site is up or down.
+            This part of the code will probably be rewritten into a class, since it has been already used for the sitemap function.
+            """
             try:
                 link_row = requests.get(post_link)
             except requests.ConnectionError as ConnectionError:
                 print("Failed to establish a new connection.")
                 print(ConnectionError)
-                sys.exit()
             except requests.Timeout as TimeoutError:
                 print("Site isn't responding yet. Either it's down for maintenance or Cloudflare is up.")
                 print(TimeoutError)
-                sys.exit()
             else:
                 url_soup = bs(link_row.text, 'html.parser')
 
@@ -90,14 +93,24 @@ def content():
                     print(url)
                     info_writer.writerow([url])
 
-                for stream_link in url_soup.find_all('iframe'):
-                    frame = stream_link['src']
-                    print(stream_link)
-                    info_writer.writerow([frame])
+                    """download links are hardcoded in all recent postings.
+                    """
+                for download_link in url_soup.select('.entry-content > p:nth-child(3) > strong:nth-child(1) > span:nth-child(1) > span:nth-child(1) > a:nth-child(2)'):
+                    download_link = download_link['href']
+                    info_writer.writerow([download_link])
+                    print(download_link)
+
+                else:
+                    for stream_link in url_soup.find_all('iframe'):
+                        frame = stream_link['src']
+                        if re.findall(r'silvalliant', frame):
+                            pass
+                        else:
+                            info_writer.writerow([frame])
+                            print(frame)
 
 
 def main():
-    init()
     links(mainSoup=init())
     content()
 
