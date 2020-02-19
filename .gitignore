@@ -102,3 +102,8 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# no longer project files
+
+client.py
+wpadapter.py

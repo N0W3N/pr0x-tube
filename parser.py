@@ -1,16 +1,17 @@
-import csv
+from bs4 import BeautifulSoup as bs
 import re
 import requests
-from bs4 import BeautifulSoup as bs
 import sys
-# from parser import
+import json
+import csv
+from functools import reduce
 
 
 def init():
-    """ initialization of the main scraper
+    """
+    initialization of the main scraper
     to collect information, create and return the soup.
-     """
-
+    """
     try:
         r = requests.get('http://localhost/post-sitemap44.xml')
     except requests.ConnectionError as ConnectionError:
@@ -42,10 +43,12 @@ def links(mainSoup):
 
 
 def content():
-    """Main function to scrape and collect all required information of all posts on the site.
+    """
+    Main function to scrape and collect all required information of all posts on the site.
      It reads the urls-file, loads each of the posts one by one, scrapes them for title, content, categories, thumbnail
      and video link - if available.
-     The function creates for each loaded link a new csv file and writes those information down."""
+     The function creates for each loaded link a new csv file and writes those information down.
+     """
 
     file_number = 0
     with open('/Users/test/pr0x-tube/urls/urls.csv', 'r') as file:
@@ -54,8 +57,10 @@ def content():
             post_link = ''.join(url_row)
             file_number += 1
 
-            """ As we create a new requests for each link, we also have to check, if the site is up or down.
-            This part of the code will probably be rewritten into a class, since it has been already used for the sitemap function.
+            """ 
+            As we create a new requests for each link, we also have to check, if the site is up or down.
+            This part of the code will probably be rewritten into a class, since it has been already used for
+            the sitemap function.
             """
             try:
                 link_row = requests.get(post_link)
@@ -68,46 +73,36 @@ def content():
             else:
                 url_soup = bs(link_row.text, 'html.parser')
 
-            with open('test%s.csv' % file_number, 'w+', newline='') as info_writer:
-                info_writer = csv.writer(info_writer, delimiter=' ')
-                for title_post in url_soup.find('h1', class_='entry-title'):
-                    info_writer.writerow(([title_post.strip()]))
-                    print(title_post)
+                data = {'Site': []}
+                with open('test%s.json' % file_number, 'w+', newline='') as c:
+                    title = url_soup.find('h1', class_='entry-title')
+                    description = url_soup.find('div', class_='entry-content post_content')
+                    category = url_soup.find('footer', {"class": "entry-meta"})
+                    image_link = url_soup.select('.aligncenter')
+                    download_link = url_soup.select('.entry-content > p:nth-child(3) > strong:nth-child(1) > span:nth-'
+                                                    'child(1) > span:nth-child(1) > a:nth-child(2)')
 
-                for description in url_soup.find_all('div', class_='entry-content post_content'):
-                    content1 = description.text
-                    info_writer.writerow([content1.strip()])
-                    print(content1)
-
-                for category in url_soup.find_all('footer', {"class": "entry-meta"}):
-                    cat = category.text
-                    print(cat)
-                    string = re.sub('Posted in', '', cat)
-                    string1 = re.sub('Tagged', ',', string)
+                    string = re.sub('Posted in', '', category.text)
+                    string1 = re.sub('Tagged', '', string)
                     string2 = re.sub('Bookmark the permalink', '', string1)
-                    print(string2[:-4])
-                    info_writer.writerow([string2[:-4].strip()])
 
-                for image_link in url_soup.select('.aligncenter'):
-                    url = image_link['src']
-                    print(url)
-                    info_writer.writerow([url])
-
-                    """download links are hardcoded in all recent postings.
                     """
-                for download_link in url_soup.select('.entry-content > p:nth-child(3) > strong:nth-child(1) > span:nth-child(1) > span:nth-child(1) > a:nth-child(2)'):
-                    download_link = download_link['href']
-                    info_writer.writerow([download_link])
-                    print(download_link)
-
-                else:
+                    else:
                     for stream_link in url_soup.find_all('iframe'):
                         frame = stream_link['src']
                         if re.findall(r'silvalliant', frame):
                             pass
                         else:
                             info_writer.writerow([frame])
-                            print(frame)
+                            print(frame)"""
+
+                    data['Site'].append({'title':title.text})
+                    data['Site'].append({'description':description.text})
+                    data['Site'].append({'category':string2})
+                    #data['Site'].append({'image_link':image_link['href']})
+                    #data['Site'].append({'download_link':download_link['href']})
+                    json.dump(data, c)
+                    print(data)
 
 
 def main():

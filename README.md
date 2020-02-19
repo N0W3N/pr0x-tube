@@ -1,33 +1,15 @@
 pr0x-tube - an automated scraping and processing for tube sites
 =============
 
-pr0xTube is a long time project to scrape and process data from several tube sites
-and convert them into posts on your own blog or CMS.
-pr0xTube is written from scratch and focuses on tube sites with a specific (and similiar) wordpress template/design
-also the possibility to access sitemap urls.
+pr0x-tube is an ongoing long-term project, which scrapes tube sites for its content, converts them into a JSON file and reposts them on your own Blog or CMS.
+This project is only for educational purpose and was 'forked' from a very old own project, written in PHP and Javascript.
+pr0x-tube will be fully written and developed in Python, using Mezzanine as CMS and an own API to handle the JSON files correctly.
 
-With the access to sitemap urls, pr0xTube is able to scrape and save all urls of its target site into an excel file - line by line.
-After that, it will continue to load every single url, scrapes them for  title, description, category, media links and creates a new excel with those informations.
+# How does it work?
 
-With the implementation of an also from scratch written Wordpress-API, these excel files can be used to automatically create new blog posts with those informations.
-
-The Project is currently under development and will feature a full frontend and backend support with Flask and MongoDB in the future.
-
-# Installation
-
-1) `git clone https://github.com/N0W3N/pr0x-tube.git`
-
-or
-
-1) download and unzip the package to your preferred path
-2) run `pip install -r requirements.txt` inside the directory
-3) edit line 9 with your own url (make sure the url matches the requirements of the code)
-
-# Usage
-
-`python client.py`
-
-excel files will be created in the work directory you've 'git cloned' it before.
-
+pr0x-tube mainly uses BeautifulSoup and requests to first load an sitemap-url, then loads all existing blog post urls into an excel file.
+If pr0x-tube has a stable set of urls, it can load all urls in that excel step by step, to scrape all needed information for the upcoming JSON file.
+The needed information we need are "title", "content", "categories", "media link" and "download link" (if possible).
+Those information will be written in the JSON file, then the API sends it via POST-request to our CMS/Blog and creates a blog post.
 
 
