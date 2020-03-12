@@ -2,10 +2,7 @@ from bs4 import BeautifulSoup as bs
 import re
 import requests
 import sys
-import json
 import csv
-from functools import reduce
-
 
 def init():
     """
@@ -33,7 +30,7 @@ def links(mainSoup):
     try:
         with open('/Users/test/pr0x-tube/urls/urls.csv', 'a+', newline='') as csvfile:
             for url in mainSoup.find_all('loc'):
-                url_writer = csv.writer(csvfile, delimiter=' ')
+                url_writer = csv.writer(c, delimiter=' ')
                 url_list = url.text.strip('|')
                 url_writer.writerow([url_list])
                 print(url_list)
@@ -73,15 +70,20 @@ def content():
             else:
                 url_soup = bs(link_row.text, 'html.parser')
 
-                data = {'Site': []}
-                with open('test%s.json' % file_number, 'w+', newline='') as c:
-                    title = url_soup.find('h1', class_='entry-title')
-                    description = url_soup.find('div', class_='entry-content post_content')
+                with open('test%s.csv' % file_number, 'w+', newline='') as c:
+                    title = url_soup.find('h1', class_='entry-title').text
+                    description = url_soup.find('div', class_='entry-content post_content').text
                     category = url_soup.find('footer', {"class": "entry-meta"})
-                    image_link = url_soup.select('.aligncenter')
-                    download_link = url_soup.select('.entry-content > p:nth-child(3) > strong:nth-child(1) > span:nth-'
-                                                    'child(1) > span:nth-child(1) > a:nth-child(2)')
 
+                    # using for loops here since there are possibly more than one links available
+
+                    for image_link in url_soup.select('.aligncenter'):
+                        img_link = image_link
+                        # img_link = image_link['src']
+                    for download_link in url_soup.select('.entry-content > p:nth-child(3) > strong:nth-child(1) > span:nth-'
+                                                    'child(1) > span:nth-child(1) > a:nth-child(2)'):
+                        dl_link = download_link
+                        # dl_link = download_link['href']
                     string = re.sub('Posted in', '', category.text)
                     string1 = re.sub('Tagged', '', string)
                     string2 = re.sub('Bookmark the permalink', '', string1)
@@ -94,16 +96,22 @@ def content():
                             pass
                         else:
                             info_writer.writerow([frame])
-                            print(frame)"""
+                            print(frame)
 
                     data['Site'].append({'title':title.text})
                     data['Site'].append({'description':description.text})
                     data['Site'].append({'category':string2})
-                    #data['Site'].append({'image_link':image_link['href']})
-                    #data['Site'].append({'download_link':download_link['href']})
+                    #data['Site'].append({'image_link': img_link})
+                    #data['Site'].append({'download_link':dl_link})
                     json.dump(data, c)
-                    print(data)
+                    print(data)"""
 
+                    info_writer = csv.writer(c, delimiter=' ')
+                    info_writer.writerow(([title]))
+                    info_writer.writerow(([description]))
+                    info_writer.writerow(([string2]))
+                    info_writer.writerow(([img_link]))
+                    info_writer.writerow(([dl_link]))
 
 def main():
     links(mainSoup=init())
