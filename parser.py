@@ -4,6 +4,7 @@ import requests
 import sys
 import csv
 
+
 def init():
     """
     initialization of the main scraper
@@ -80,31 +81,14 @@ def content():
                     for image_link in url_soup.select('.aligncenter'):
                         img_link = image_link
                         # img_link = image_link['src']
-                    for download_link in url_soup.select('.entry-content > p:nth-child(3) > strong:nth-child(1) > span:nth-'
-                                                    'child(1) > span:nth-child(1) > a:nth-child(2)'):
+                    for download_link in url_soup.select(
+                            '.entry-content > p:nth-child(3) > strong:nth-child(1) > span:nth-'
+                            'child(1) > span:nth-child(1) > a:nth-child(2)'):
                         dl_link = download_link
                         # dl_link = download_link['href']
                     string = re.sub('Posted in', '', category.text)
                     string1 = re.sub('Tagged', '', string)
                     string2 = re.sub('Bookmark the permalink', '', string1)
-
-                    """
-                    else:
-                    for stream_link in url_soup.find_all('iframe'):
-                        frame = stream_link['src']
-                        if re.findall(r'silvalliant', frame):
-                            pass
-                        else:
-                            info_writer.writerow([frame])
-                            print(frame)
-
-                    data['Site'].append({'title':title.text})
-                    data['Site'].append({'description':description.text})
-                    data['Site'].append({'category':string2})
-                    #data['Site'].append({'image_link': img_link})
-                    #data['Site'].append({'download_link':dl_link})
-                    json.dump(data, c)
-                    print(data)"""
 
                     info_writer = csv.writer(c, delimiter=' ')
                     info_writer.writerow(([title]))
@@ -112,6 +96,8 @@ def content():
                     info_writer.writerow(([string2]))
                     info_writer.writerow(([img_link]))
                     info_writer.writerow(([dl_link]))
+
+
 
 def main():
     links(mainSoup=init())
