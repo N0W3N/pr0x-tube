@@ -5,9 +5,7 @@ import csv
 
 file_number = 2
 
-
 while True:
-
     with open('test%s.csv' % file_number, 'r', newline='') as parser:
         file_number += 1
         content = csv.reader(parser, delimiter=' ')
@@ -25,7 +23,14 @@ while True:
             "status": 1,
         })
         headers = {'Content-type': 'application/json',
-                       'Authorization': 'Token TEST'}
-        response = requests.post(url, data=data, headers=headers)
-
-        print(data, response.status_code, response.reason)
+                   'Authorization': 'Token TEST'}
+        try:
+            response = requests.post(url, data=data, headers=headers)
+        except ConnectionError:
+            print("Failed to establish a new connection.\n"
+                  f"Details: {ConnectionError}")
+        except ConnectionRefusedError as CRE:
+            print("Connection has been refused. Token is either invalid or doesn't exist.\n"
+                  f"Details: {CRE}")
+        else:
+            print()
