@@ -81,11 +81,10 @@ def content():
                     for image_link in url_soup.select('.aligncenter'):
                         img_link = image_link
                         # img_link = image_link['src']
-                    for download_link in url_soup.select(
-                            '.entry-content > p:nth-child(3) > strong:nth-child(1) > span:nth-'
-                            'child(1) > span:nth-child(1) > a:nth-child(2)'):
-                        dl_link = download_link
-                        # dl_link = download_link['href']
+                    go_link = url_soup.select(
+                            '.entry-content > p:nth-child(3) > strong:nth-child(1) > span:nth-child(1) > span:nth-child(1) > a:nth-child(2)')
+                    for dl_link in go_link:
+                        link = dl_link['href']
                     cat_temp = re.sub('Posted in', '', category.text)
                     cat_temp1 = re.sub('Tagged', '', cat_temp)
                     categories = re.sub('Bookmark the permalink', '', cat_temp1)
@@ -95,7 +94,7 @@ def content():
                     info_writer.writerow(([description]))
                     info_writer.writerow(([categories]))
                     info_writer.writerow(([img_link]))
-                    info_writer.writerow(([dl_link]))
+                    info_writer.writerow(([link]))
 
 
 def main():
