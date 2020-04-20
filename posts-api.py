@@ -5,27 +5,34 @@ import csv
 
 file_number = 2
 
-
-while True:
-
+while file_number <= 3:
     with open('test%s.csv' % file_number, 'r', newline='') as parser:
         file_number += 1
         content = csv.reader(parser, delimiter=' ')
         rows = list(content)
-        title = str(rows[0])
-        content = str(rows[1])
-        category = str(rows[2])
+        title = str(''.join(rows[0]))
+        content = str(''.join(rows[1]))
+        category = str(''.join(rows[2]))
+        test = str(''.join(rows[3]))
 
         url = 'http://127.0.0.1:8000/api/posts'
 
+
         data = json.dumps({
             "title": title,
-            "content": content,
+            "content": content + test,
             "categories": category,
             "status": 1,
         })
         headers = {'Content-type': 'application/json',
-                       'Authorization': 'Token TEST'}
-        response = requests.post(url, data=data, headers=headers)
-
-        print(data, response.status_code, response.reason)
+                   'Authorization': 'Token TEST'}
+        try:
+            response = requests.post(url, data=data, headers=headers)
+        except ConnectionError:
+            print("Failed to establish a new connection.\n"
+                  f"Details: {ConnectionError}")
+        except ConnectionRefusedError as CRE:
+            print("Connection has been refused. Token is either invalid or doesn't exist.\n"
+                  f"Details: {CRE}")
+        else:
+            print(response.json())
