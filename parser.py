@@ -11,7 +11,7 @@ def init():
     to collect information, create and return the soup.
     """
     try:
-        r = requests.get('http://localhost/post-sitemap44.xml')
+        r = requests.get('http://localhost.com/post-sitemap46.xml')
     except requests.ConnectionError as ConnectionError:
         print("Failed to establish a new connection")
         print(ConnectionError)
@@ -85,6 +85,11 @@ def content():
                             '.entry-content > p:nth-child(3) > strong:nth-child(1) > span:nth-child(1) > span:nth-child(1) > a:nth-child(2)')
                     for dl_link in go_link:
                         link = dl_link['href']
+
+                    mixdrop_link = url_soup.select('.entry-content > p:nth-child(3) > strong:nth-child(1) > span:nth-child(1) > span:nth-child(1) > a:nth-child(3)')
+                    for mx_link in mixdrop_link:
+                        link1 = mx_link['href']
+
                     cat_temp = re.sub('Posted in', '', category.text)
                     cat_temp1 = re.sub('Tagged', '', cat_temp)
                     categories = re.sub('Bookmark the permalink', '', cat_temp1)
@@ -95,6 +100,7 @@ def content():
                     info_writer.writerow(([categories]))
                     info_writer.writerow(([img_link]))
                     info_writer.writerow(([link]))
+                    info_writer.writerow(([link1]))
 
 
 def main():

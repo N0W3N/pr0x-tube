@@ -9,24 +9,26 @@ import csv
 import itertools
 import os
 
-"""def mixdrop():
+#TODO: give the variables better names
+
+def mixdrop():
+    import csv_m
     #mixdrop requires mail + api key
-    email = "drcreaven@gmail.com"
-    url = ''
-    key_mixdrop = "TOKEN"
-    upload_mixdrop = f'https://api.mixdrop.co/remoteupload?email={email}&key={key_mixdrop}&url={url}'
+    email = "MAIL"
+    old_url = (''.join(csv_m.rows[5]))
+    key_mixdrop = "API KEY"
+    upload_mixdrop = f'https://api.mixdrop.co/remoteupload?email={email}&key={key_mixdrop}&url={old_url}'
     mixdrop_r = requests.get(upload_mixdrop)
     mixdrop_response = mixdrop_r.json()
     fileref = mixdrop_response["result"]["fileref"]
-    file = requests.get(f'https://api.mixdrop.co/fileinfo?email={email}&key={key_mixdrop}&ref[]= {fileref}')
-    file_url = file["result"][]
-    print(mixdrop_r.json())"""
+    return fileref
+
 
 
 def gounlimited():
     """gounlimited only requires an api key, but has its own way to deal with file cloning.
     file code equals everything after the last slash of the video url - generate it with regex"""
-    key_gounlimited = 'TOKEN'
+    key_gounlimited = 'API KEY'
     import csv_m
 
     """opens csv after csv to retrieve the old existing stream-link, parses it through the GO API
