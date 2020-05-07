@@ -5,6 +5,7 @@ import csv
 
 file_number = 2
 
+
 while file_number <= 3:
     with open('test%s.csv' % file_number, 'r', newline='') as parser:
         file_number += 1
