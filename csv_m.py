@@ -7,6 +7,8 @@ After that it replaces whitespaces and other unnecessary information in the file
 If the dummy module got all the new information and all the new content, it creates an additionally csv file - as copy of the original file - filled/replaced with small changes.
 """
 
+#TODO: give the variables better names
+
 file_number = 1
 while os.path.exists('test%s.csv' % file_number):
     file_number += 1
@@ -17,6 +19,7 @@ while os.path.exists('test%s.csv' % file_number):
         title = str(''.join(rows[0]))
         content = str(''.join(rows[1]))
         category = str(''.join(rows[2]))
+        
         cat = category.replace('.', '')
         cat1 = cat.replace('  ', ', ')
         con = content.replace('Watch:\nDATOPORN\nGOUNLIMITED\nVIDLOX', "")
@@ -30,7 +33,6 @@ while os.path.exists('test%s.csv' % file_number):
             url_writer = csv.writer(c, delimiter=' ')
             url_writer.writerow([title])
             url_writer.writerow([con])
-            url_writer.writerow([cat1])
             url_writer.writerow([newfile])
 
 

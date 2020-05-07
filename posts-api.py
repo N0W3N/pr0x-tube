@@ -5,7 +5,6 @@ import csv
 
 file_number = 2
 
-
 while file_number <= 3:
     with open('test%s.csv' % file_number, 'r', newline='') as parser:
         file_number += 1
@@ -36,4 +35,5 @@ while file_number <= 3:
             print("Connection has been refused. Token is either invalid or doesn't exist.\n"
                   f"Details: {CRE}")
         else:
+
             print(response.json())
