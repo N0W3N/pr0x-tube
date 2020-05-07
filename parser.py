@@ -81,6 +81,7 @@ def content():
                     for image_link in url_soup.select('.aligncenter'):
                         img_link = image_link
                         # img_link = image_link['src']
+
                     go_link = url_soup.select(
                             '.entry-content > p:nth-child(3) > strong:nth-child(1) > span:nth-child(1) > span:nth-child(1) > a:nth-child(2)')
                     for dl_link in go_link:
@@ -89,6 +90,7 @@ def content():
                     mixdrop_link = url_soup.select('.entry-content > p:nth-child(3) > strong:nth-child(1) > span:nth-child(1) > span:nth-child(1) > a:nth-child(3)')
                     for mx_link in mixdrop_link:
                         link1 = mx_link['href']
+
 
                     cat_temp = re.sub('Posted in', '', category.text)
                     cat_temp1 = re.sub('Tagged', '', cat_temp)
@@ -101,7 +103,6 @@ def content():
                     info_writer.writerow(([img_link]))
                     info_writer.writerow(([link]))
                     info_writer.writerow(([link1]))
-
 
 def main():
     links(mainSoup=init())

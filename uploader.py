@@ -23,11 +23,12 @@ def mixdrop():
     filecode_mixdrop = response_mixdrop["result"]["fileref"]  # new filecode is nested along with other information
     return filecode_mixdrop
 
-
 def gounlimited():
     """gounlimited only requires an api key, but has its own way to deal with file cloning.
     file code equals everything after the last slash of the video url - generate it with regex"""
+
     api_gounlimited = 'API KEY'
+
     import csv_m
 
     """opens csv after csv to retrieve the old existing stream-link, parses it through the GO API

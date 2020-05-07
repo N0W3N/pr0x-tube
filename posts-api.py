@@ -35,4 +35,5 @@ while file_number <= 3:
             print("Connection has been refused. Token is either invalid or doesn't exist.\n"
                   f"Details: {CRE}")
         else:
+
             print(response.json())
